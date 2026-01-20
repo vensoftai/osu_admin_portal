@@ -9,9 +9,18 @@ import { KYCSubmission } from '@/types';
 interface KYCTableProps {
   submissions: KYCSubmission[];
   showTabs?: boolean;
+  onReview?: (submission: KYCSubmission) => void;
+  onApprove?: (id: string) => void;
+  onReject?: (id: string) => void;
 }
 
-export function KYCTable({ submissions, showTabs = true }: KYCTableProps) {
+export function KYCTable({ 
+  submissions, 
+  showTabs = true, 
+  onReview,
+  onApprove,
+  onReject 
+}: KYCTableProps) {
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -119,9 +128,28 @@ export function KYCTable({ submissions, showTabs = true }: KYCTableProps) {
                   </td>
                   <td>
                     <div className="flex gap-3">
-                      <span className="action-link">Review</span>
-                      <span className="action-link">Approve</span>
-                      <span className="action-link">Reject</span>
+                      <span 
+                        className="action-link"
+                        onClick={() => onReview?.(submission)}
+                      >
+                        Review
+                      </span>
+                      {submission.status === 'pending' && (
+                        <>
+                          <span 
+                            className="action-link"
+                            onClick={() => onApprove?.(submission.id)}
+                          >
+                            Approve
+                          </span>
+                          <span 
+                            className="action-link"
+                            onClick={() => onReject?.(submission.id)}
+                          >
+                            Reject
+                          </span>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

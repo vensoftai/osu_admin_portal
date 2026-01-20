@@ -12,14 +12,118 @@ export const mockUsers: User[] = [
 ];
 
 export const mockKYCSubmissions: KYCSubmission[] = [
-  { id: '1', userId: 'USR-10234', user: mockUsers[0], submissionDate: 'Jan 15, 2025', documentType: "Driver's License", status: 'pending' },
-  { id: '2', userId: 'USR-10233', user: mockUsers[1], submissionDate: 'Jan 14, 2025', documentType: 'Passport', status: 'pending' },
-  { id: '3', userId: 'USR-10232', user: mockUsers[2], submissionDate: 'Jan 14, 2025', documentType: 'National ID', status: 'pending' },
-  { id: '4', userId: 'USR-10231', user: mockUsers[3], submissionDate: 'Jan 13, 2025', documentType: "Driver's License", status: 'approved' },
-  { id: '5', userId: 'USR-10230', user: mockUsers[4], submissionDate: 'Jan 13, 2025', documentType: 'Passport', status: 'approved' },
-  { id: '6', userId: 'USR-10229', user: mockUsers[5], submissionDate: 'Jan 12, 2025', documentType: 'National ID', status: 'rejected' },
-  { id: '7', userId: 'USR-10228', user: mockUsers[6], submissionDate: 'Jan 12, 2025', documentType: "Driver's License", status: 'pending' },
-  { id: '8', userId: 'USR-10227', user: mockUsers[7], submissionDate: 'Jan 11, 2025', documentType: 'Passport', status: 'approved' },
+  { 
+    id: '1', 
+    userId: 'USR-10234', 
+    user: mockUsers[0], 
+    submissionDate: 'Jan 15, 2025', 
+    documentType: "Driver's License", 
+    status: 'pending',
+    documents: {
+      govIdFront: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop',
+      govIdBack: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop',
+      selfie: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop',
+      addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
+    }
+  },
+  { 
+    id: '2', 
+    userId: 'USR-10233', 
+    user: mockUsers[1], 
+    submissionDate: 'Jan 14, 2025', 
+    documentType: 'Passport', 
+    status: 'pending',
+    documents: {
+      govIdFront: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=250&fit=crop',
+      govIdBack: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=250&fit=crop',
+      selfie: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop',
+      addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
+    }
+  },
+  { 
+    id: '3', 
+    userId: 'USR-10232', 
+    user: mockUsers[2], 
+    submissionDate: 'Jan 14, 2025', 
+    documentType: 'National ID', 
+    status: 'pending',
+    documents: {
+      govIdFront: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop',
+      govIdBack: 'https://images.unsplash.com/photo-662996442-48f60103fc96?w=400&h=250&fit=crop',
+      selfie: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop',
+      addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
+    }
+  },
+  { 
+    id: '4', 
+    userId: 'USR-10231', 
+    user: mockUsers[3], 
+    submissionDate: 'Jan 13, 2025', 
+    documentType: "Driver's License", 
+    status: 'approved',
+    documents: {
+      govIdFront: 'https://images.unsplash.com/photo-578662996442-48f60103fc96?w=400&h=250&fit=crop',
+      govIdBack: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop',
+      selfie: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop',
+      addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
+    }
+  },
+  { 
+    id: '5', 
+    userId: 'USR-10230', 
+    user: mockUsers[4], 
+    submissionDate: 'Jan 13, 2025', 
+    documentType: 'Passport', 
+    status: 'approved',
+    documents: {
+      govIdFront: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=250&fit=crop',
+      govIdBack: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=250&fit=crop',
+      selfie: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=300&fit=crop',
+      addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
+    }
+  },
+  { 
+    id: '6', 
+    userId: 'USR-10229', 
+    user: mockUsers[5], 
+    submissionDate: 'Jan 12, 2025', 
+    documentType: 'National ID', 
+    status: 'rejected',
+    documents: {
+      govIdFront: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop',
+      govIdBack: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop',
+      selfie: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop',
+      addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
+    }
+  },
+  { 
+    id: '7', 
+    userId: 'USR-10228', 
+    user: mockUsers[6], 
+    submissionDate: 'Jan 12, 2025', 
+    documentType: "Driver's License", 
+    status: 'pending',
+    documents: {
+      govIdFront: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop',
+      govIdBack: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop',
+      selfie: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop',
+      addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
+    }
+  },
+  { 
+    id: '8', 
+    userId: 'USR-10227', 
+    user: mockUsers[7], 
+    submissionDate: 'Jan 11, 2025', 
+    documentType: 'Passport', 
+    status: 'approved',
+    documents: {
+      govIdFront: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=250&fit=crop',
+      govIdBack: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=250&fit=crop',
+      selfie: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop',
+      addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
+    }
+  },
 ];
 
 export const mockSupportTickets: SupportTicket[] = [
