@@ -5,6 +5,13 @@ export interface User {
   avatar?: string;
 }
 
+export interface KYCDocuments {
+  govIdFront: string;
+  govIdBack: string;
+  selfie: string;
+  addressProof: string;
+}
+
 export interface KYCSubmission {
   id: string;
   userId: string;
@@ -12,6 +19,7 @@ export interface KYCSubmission {
   submissionDate: string;
   documentType: string;
   status: 'pending' | 'approved' | 'rejected';
+  documents?: KYCDocuments;
 }
 
 export interface SupportTicket {

@@ -13,13 +13,19 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { mockKYCSubmissions } from '@/data/mockData';
+import { KYCReviewModal } from '@/components/kyc/KYCReviewModal';
+import { KYCSubmission } from '@/types';
+import { toast } from 'sonner';
 
 export default function KYCVerification() {
+  const [submissions, setSubmissions] = useState(mockKYCSubmissions);
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [selectedSubmission, setSelectedSubmission] = useState<KYCSubmission | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const filteredSubmissions = mockKYCSubmissions.filter((submission) => {
+  const filteredSubmissions = submissions.filter((submission) => {
     const matchesTab = submission.status === activeTab;
     const matchesSearch = 
       submission.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -29,13 +35,32 @@ export default function KYCVerification() {
   });
 
   const counts = {
-    pending: mockKYCSubmissions.filter(s => s.status === 'pending').length,
-    approved: mockKYCSubmissions.filter(s => s.status === 'approved').length,
-    rejected: mockKYCSubmissions.filter(s => s.status === 'rejected').length,
+    pending: submissions.filter(s => s.status === 'pending').length,
+    approved: submissions.filter(s => s.status === 'approved').length,
+    rejected: submissions.filter(s => s.status === 'rejected').length,
   };
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
+
+  const handleReview = (submission: KYCSubmission) => {
+    setSelectedSubmission(submission);
+    setIsModalOpen(true);
+  };
+
+  const handleApprove = (id: string) => {
+    setSubmissions(prev => prev.map(s => 
+      s.id === id ? { ...s, status: 'approved' as const } : s
+    ));
+    toast.success('KYC submission approved successfully');
+  };
+
+  const handleReject = (id: string, reason?: string) => {
+    setSubmissions(prev => prev.map(s => 
+      s.id === id ? { ...s, status: 'rejected' as const } : s
+    ));
+    toast.success('KYC submission rejected');
   };
 
   return (
@@ -135,9 +160,28 @@ export default function KYCVerification() {
                   </td>
                   <td>
                     <div className="flex gap-3">
-                      <span className="action-link">Review</span>
-                      <span className="action-link">Approve</span>
-                      <span className="action-link">Reject</span>
+                      <span 
+                        className="action-link"
+                        onClick={() => handleReview(submission)}
+                      >
+                        Review
+                      </span>
+                      {submission.status === 'pending' && (
+                        <>
+                          <span 
+                            className="action-link"
+                            onClick={() => handleApprove(submission.id)}
+                          >
+                            Approve
+                          </span>
+                          <span 
+                            className="action-link"
+                            onClick={() => handleReject(submission.id)}
+                          >
+                            Reject
+                          </span>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -164,6 +208,18 @@ export default function KYCVerification() {
           </div>
         </div>
       </div>
+
+      {/* KYC Review Modal */}
+      <KYCReviewModal
+        submission={selectedSubmission}
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedSubmission(null);
+        }}
+        onApprove={handleApprove}
+        onReject={handleReject}
+      />
     </AdminLayout>
   );
 }
