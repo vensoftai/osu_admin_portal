@@ -14,8 +14,8 @@ export function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
   return (
     <div className="min-h-screen bg-background flex">
       <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
-      
-      <div className="flex-1 flex flex-col min-w-0">
+
+      <div className="flex-1 flex flex-col min-w-0 lg:ml-64">
         <Header
           title={title}
           subtitle={subtitle}

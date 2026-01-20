@@ -2,7 +2,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import Login from "./pages/Login";
 import Index from "./pages/Index";
 import KYCVerification from "./pages/KYCVerification";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -10,6 +13,7 @@ import TermsConditions from "./pages/TermsConditions";
 import SavingsDisclaimer from "./pages/SavingsDisclaimer";
 import ReferralPolicy from "./pages/ReferralPolicy";
 import SupportTicket from "./pages/SupportTicket";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,16 +24,76 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/kyc-verification" element={<KYCVerification />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-conditions" element={<TermsConditions />} />
-          <Route path="/savings-disclaimer" element={<SavingsDisclaimer />} />
-          <Route path="/referral-policy" element={<ReferralPolicy />} />
-          <Route path="/support-ticket" element={<SupportTicket />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Index />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/kyc-verification"
+              element={
+                <ProtectedRoute>
+                  <KYCVerification />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/privacy-policy"
+              element={
+                <ProtectedRoute>
+                  <PrivacyPolicy />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/terms-conditions"
+              element={
+                <ProtectedRoute>
+                  <TermsConditions />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/savings-disclaimer"
+              element={
+                <ProtectedRoute>
+                  <SavingsDisclaimer />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/referral-policy"
+              element={
+                <ProtectedRoute>
+                  <ReferralPolicy />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/support-ticket"
+              element={
+                <ProtectedRoute>
+                  <SupportTicket />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

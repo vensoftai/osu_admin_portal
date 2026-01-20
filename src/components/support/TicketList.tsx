@@ -3,6 +3,13 @@ import { Search, Filter, MessageCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { SupportTicket } from '@/types';
 
@@ -15,13 +22,15 @@ interface TicketListProps {
 export function TicketList({ tickets, onSelectTicket, selectedTicketId }: TicketListProps) {
   const [activeTab, setActiveTab] = useState<'open' | 'in-progress' | 'resolved' | 'closed'>('open');
   const [searchQuery, setSearchQuery] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState('all');
 
   const filteredTickets = tickets.filter((ticket) => {
     const matchesTab = ticket.status === activeTab;
-    const matchesSearch = 
+    const matchesSearch =
       ticket.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
       ticket.user.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesTab && matchesSearch;
+    const matchesPriority = priorityFilter === 'all' || ticket.priority === priorityFilter;
+    return matchesTab && matchesSearch && matchesPriority;
   });
 
   const counts = {
@@ -80,10 +89,18 @@ export function TicketList({ tickets, onSelectTicket, selectedTicketId }: Ticket
                 className="pl-9 w-full sm:w-64"
               />
             </div>
-            <Button variant="outline" className="gap-2">
-              <Filter className="h-4 w-4" />
-              <span className="hidden sm:inline">Filter</span>
-            </Button>
+            <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+              <SelectTrigger className="w-[120px]">
+                <Filter className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Filter" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Priority</SelectItem>
+                <SelectItem value="high">High</SelectItem>
+                <SelectItem value="medium">Medium</SelectItem>
+                <SelectItem value="low">Low</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 

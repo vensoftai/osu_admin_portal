@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   ShieldCheck,
@@ -8,6 +8,7 @@ import {
   AlertTriangle,
   Users,
   Headphones,
+  Settings,
   LogOut,
   Menu,
   X,
@@ -16,6 +17,8 @@ import {
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 interface NavItem {
   label: string;
@@ -31,6 +34,7 @@ const navItems: NavItem[] = [
   { label: 'Savings Challenge Disclaimer', path: '/savings-disclaimer', icon: AlertTriangle },
   { label: 'Referral Policy', path: '/referral-policy', icon: Users },
   { label: 'Support Ticket', path: '/support-ticket', icon: Headphones },
+  { label: 'Settings', path: '/settings', icon: Settings },
 ];
 
 interface SidebarProps {
@@ -40,6 +44,14 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    toast.success('Logged out successfully');
+    navigate('/login');
+  };
 
   return (
     <>
@@ -54,8 +66,8 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed top-0 left-0 z-50 h-full bg-sidebar border-r border-sidebar-border flex flex-col transition-all duration-300',
-          'lg:translate-x-0 lg:static',
+          'fixed top-0 left-0 z-50 h-screen bg-sidebar border-r border-sidebar-border flex flex-col transition-all duration-300',
+          'lg:translate-x-0',
           isOpen ? 'translate-x-0 w-64' : '-translate-x-full w-64 lg:w-64'
         )}
       >
@@ -102,21 +114,22 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
         </nav>
 
         {/* User Profile */}
-        <div className="p-4 border-t border-sidebar-border">
+        <div className="p-4 border-t border-sidebar-border mt-auto">
           <div className="flex items-center gap-3 mb-3">
             <Avatar className="h-10 w-10">
               <AvatarFallback className="bg-muted text-muted-foreground text-sm">
-                JA
+                {user?.name.split(' ').map(n => n[0]).join('').toUpperCase() || 'AD'}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">John Admin</p>
-              <p className="text-xs text-muted-foreground truncate">Administrator</p>
+              <p className="text-sm font-medium text-foreground truncate">{user?.name || 'Admin'}</p>
+              <p className="text-xs text-muted-foreground truncate">{user?.role || 'Administrator'}</p>
             </div>
           </div>
           <Button
             variant="outline"
             className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
+            onClick={handleLogout}
           >
             <LogOut className="h-4 w-4" />
             Logout

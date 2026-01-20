@@ -14,19 +14,19 @@ interface KYCTableProps {
   onReject?: (id: string) => void;
 }
 
-export function KYCTable({ 
-  submissions, 
-  showTabs = true, 
+export function KYCTable({
+  submissions,
+  showTabs = true,
   onReview,
   onApprove,
-  onReject 
+  onReject
 }: KYCTableProps) {
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredSubmissions = submissions.filter((submission) => {
     const matchesTab = submission.status === activeTab;
-    const matchesSearch = 
+    const matchesSearch =
       submission.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       submission.user.email.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesTab && matchesSearch;
@@ -43,7 +43,7 @@ export function KYCTable({
   };
 
   return (
-    <div className="bg-card border border-border rounded-lg overflow-hidden">
+    <div className="bg-card border border-border rounded-lg overflow-hidden flex flex-col">
       {showTabs && (
         <div className="border-b border-border px-4 pt-4">
           <div className="flex gap-6">
@@ -65,7 +65,7 @@ export function KYCTable({
         </div>
       )}
 
-      <div className="p-4">
+      <div className="p-4 flex flex-col overflow-hidden">
         <div className="flex flex-col sm:flex-row gap-4 justify-between mb-4">
           <h3 className="font-semibold text-foreground">
             {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} KYC Submissions
@@ -80,14 +80,10 @@ export function KYCTable({
                 className="pl-9 w-full sm:w-64"
               />
             </div>
-            <Button variant="outline" className="gap-2">
-              <Filter className="h-4 w-4" />
-              Filter
-            </Button>
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto overflow-y-auto max-h-[500px]">
           <table className="data-table">
             <thead>
               <tr>
@@ -128,7 +124,7 @@ export function KYCTable({
                   </td>
                   <td>
                     <div className="flex gap-3">
-                      <span 
+                      <span
                         className="action-link"
                         onClick={() => onReview?.(submission)}
                       >
@@ -136,13 +132,13 @@ export function KYCTable({
                       </span>
                       {submission.status === 'pending' && (
                         <>
-                          <span 
+                          <span
                             className="action-link"
                             onClick={() => onApprove?.(submission.id)}
                           >
                             Approve
                           </span>
-                          <span 
+                          <span
                             className="action-link"
                             onClick={() => onReject?.(submission.id)}
                           >

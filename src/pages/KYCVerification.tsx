@@ -22,16 +22,27 @@ export default function KYCVerification() {
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [dateRange, setDateRange] = useState<{ start: string, end: string } | null>(null);
   const [selectedSubmission, setSelectedSubmission] = useState<KYCSubmission | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredSubmissions = submissions.filter((submission) => {
-    const matchesTab = submission.status === activeTab;
-    const matchesSearch = 
+    const matchesTab = statusFilter === 'all' ? true : submission.status === statusFilter;
+    const matchesActiveTab = submission.status === activeTab;
+    const matchesSearch =
       submission.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       submission.user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       submission.userId.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesTab && matchesSearch;
+
+    let matchesDate = true;
+    if (dateRange) {
+      const submissionDate = new Date(submission.submissionDate);
+      const startDate = new Date(dateRange.start);
+      const endDate = new Date(dateRange.end);
+      matchesDate = submissionDate >= startDate && submissionDate <= endDate;
+    }
+
+    return matchesActiveTab && matchesSearch && matchesDate;
   });
 
   const counts = {
@@ -50,17 +61,24 @@ export default function KYCVerification() {
   };
 
   const handleApprove = (id: string) => {
-    setSubmissions(prev => prev.map(s => 
+    setSubmissions(prev => prev.map(s =>
       s.id === id ? { ...s, status: 'approved' as const } : s
     ));
     toast.success('KYC submission approved successfully');
   };
 
   const handleReject = (id: string, reason?: string) => {
-    setSubmissions(prev => prev.map(s => 
+    setSubmissions(prev => prev.map(s =>
       s.id === id ? { ...s, status: 'rejected' as const } : s
     ));
     toast.success('KYC submission rejected');
+  };
+
+  const handleResetFilters = () => {
+    setStatusFilter('all');
+    setDateRange(null);
+    setSearchQuery('');
+    toast.success('Filters reset');
   };
 
   return (
@@ -93,25 +111,24 @@ export default function KYCVerification() {
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[120px]">
-                  <Filter className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="All S..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="approved">Approved</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex gap-2">
+                <input
+                  type="date"
+                  className="px-3 py-2 border border-border rounded-md text-sm"
+                  placeholder="Start Date"
+                  value={dateRange?.start || ''}
+                  onChange={(e) => setDateRange(prev => ({ start: e.target.value, end: prev?.end || '' }))}
+                />
+                <input
+                  type="date"
+                  className="px-3 py-2 border border-border rounded-md text-sm"
+                  placeholder="End Date"
+                  value={dateRange?.end || ''}
+                  onChange={(e) => setDateRange(prev => ({ start: prev?.start || '', end: e.target.value }))}
+                />
+              </div>
 
-              <Button variant="outline" className="gap-2">
-                <Calendar className="h-4 w-4" />
-                <span className="hidden sm:inline">Select Date Range</span>
-              </Button>
-
-              <Button variant="outline" className="gap-2">
+              <Button variant="outline" className="gap-2" onClick={handleResetFilters}>
                 <RotateCcw className="h-4 w-4" />
                 Reset
               </Button>
@@ -160,7 +177,7 @@ export default function KYCVerification() {
                   </td>
                   <td>
                     <div className="flex gap-3">
-                      <span 
+                      <span
                         className="action-link"
                         onClick={() => handleReview(submission)}
                       >
@@ -168,13 +185,13 @@ export default function KYCVerification() {
                       </span>
                       {submission.status === 'pending' && (
                         <>
-                          <span 
+                          <span
                             className="action-link"
                             onClick={() => handleApprove(submission.id)}
                           >
                             Approve
                           </span>
-                          <span 
+                          <span
                             className="action-link"
                             onClick={() => handleReject(submission.id)}
                           >
