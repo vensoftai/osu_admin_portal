@@ -1,70 +1,100 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-interface User {
-    id: string;
-    email: string;
-    name: string;
-    role: string;
-}
+import { authService, tokenService, type User } from '@/lib/api';
+import { AxiosError } from 'axios';
 
 interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
     isLoading: boolean;
-    login: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
     logout: () => void;
     changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * Extract error message from API error response
+ */
+function getErrorMessage(error: unknown): string {
+    if (error instanceof AxiosError) {
+        // Handle different error response structures
+        const data = error.response?.data;
+
+        if (typeof data === 'string') return data;
+        if (data?.message) return data.message;
+        if (data?.detail) return data.detail;
+        if (data?.error) return data.error;
+        if (data?.non_field_errors) return data.non_field_errors[0];
+
+        // Handle validation errors
+        if (data?.errors && typeof data.errors === 'object') {
+            const firstError = Object.values(data.errors)[0];
+            if (Array.isArray(firstError)) return firstError[0] as string;
+        }
+
+        // HTTP status based messages
+        switch (error.response?.status) {
+            case 400:
+                return 'Invalid credentials. Please check your email and password.';
+            case 401:
+                return 'Invalid email or password. Please try again.';
+            case 403:
+                return 'Access denied. You do not have permission to login.';
+            case 404:
+                return 'Account not found. Please check your email.';
+            case 500:
+                return 'Server error. Please try again later.';
+            default:
+                return 'An error occurred. Please try again.';
+        }
+    }
+
+    if (error instanceof Error) return error.message;
+    return 'An unexpected error occurred. Please try again.';
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Check if user is already logged in (from localStorage)
-        const storedUser = localStorage.getItem('admin_user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-        setIsLoading(false);
-    }, []);
+        // Check if user is already logged in
+        const initializeAuth = () => {
+            const storedUser = authService.getStoredUser();
+            const isValid = tokenService.isAuthenticated();
 
-    const login = async (email: string, password: string) => {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // Mock authentication - accept any email/password for demo
-        // In production, this would validate against a real API
-        const mockUser: User = {
-            id: '1',
-            email: email,
-            name: 'John Admin',
-            role: 'Administrator',
+            if (storedUser && isValid) {
+                setUser(storedUser);
+            } else {
+                // Clear invalid session
+                authService.logout();
+            }
+            setIsLoading(false);
         };
 
-        setUser(mockUser);
-        localStorage.setItem('admin_user', JSON.stringify(mockUser));
+        initializeAuth();
+    }, []);
+
+    const login = async (email: string, password: string): Promise<{ success: boolean; message: string }> => {
+        try {
+            const { user: loggedInUser, message } = await authService.login({ email, password });
+            setUser(loggedInUser);
+            return { success: true, message };
+        } catch (error) {
+            const errorMessage = getErrorMessage(error);
+            return { success: false, message: errorMessage };
+        }
     };
 
     const logout = () => {
+        authService.logout();
         setUser(null);
-        localStorage.removeItem('admin_user');
     };
 
     const changePassword = async (currentPassword: string, newPassword: string) => {
-        // Simulate API call
+        // TODO: Implement change password API call
         await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // In production, this would:
-        // 1. Verify current password
-        // 2. Update password on the server
-        // 3. Return success/error
-
-        // For demo purposes, we just simulate success
-        // The password is not actually stored anywhere
         return Promise.resolve();
     };
 
@@ -72,7 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         <AuthContext.Provider
             value={{
                 user,
-                isAuthenticated: !!user,
+                isAuthenticated: !!user && tokenService.isAuthenticated(),
                 isLoading,
                 login,
                 logout,

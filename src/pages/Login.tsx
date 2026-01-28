@@ -26,11 +26,16 @@ export default function Login() {
 
         setIsLoading(true);
         try {
-            await login(email, password);
-            toast.success('Login successful! Redirecting...');
-            navigate('/');
+            const result = await login(email, password);
+
+            if (result.success) {
+                toast.success(result.message || 'Login successful! Redirecting...');
+                navigate('/');
+            } else {
+                toast.error(result.message || 'Login failed. Please try again.');
+            }
         } catch (error) {
-            toast.error('Login failed. Please try again.');
+            toast.error('An unexpected error occurred. Please try again.');
         } finally {
             setIsLoading(false);
         }
@@ -94,9 +99,6 @@ export default function Login() {
                             {isLoading ? 'Signing in...' : 'Sign in'}
                         </Button>
                     </form>
-                    <div className="mt-4 text-center text-sm text-muted-foreground">
-                        <p>Demo: Use any email and password to login</p>
-                    </div>
                 </CardContent>
             </Card>
         </div>
