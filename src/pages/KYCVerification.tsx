@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Search, Filter, RotateCcw, Calendar } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Search, Filter, RotateCcw, Calendar, Loader2 } from 'lucide-react';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -11,38 +11,60 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
-import { mockKYCSubmissions } from '@/data/mockData';
+import { cn, formatDateTime } from '@/lib/utils';
+import { kycService } from '@/lib/api';
+import { transformKYCSubmissions } from '@/lib/transformers';
 import { KYCReviewModal } from '@/components/kyc/KYCReviewModal';
 import { KYCSubmission } from '@/types';
 import { toast } from 'sonner';
 
+type TabType = 'pending' | 'approved' | 'rejected';
+
 export default function KYCVerification() {
-  const [submissions, setSubmissions] = useState(mockKYCSubmissions);
-  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending');
+  const [submissions, setSubmissions] = useState<KYCSubmission[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<TabType>('pending');
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
   const [dateRange, setDateRange] = useState<{ start: string, end: string } | null>(null);
   const [selectedSubmission, setSelectedSubmission] = useState<KYCSubmission | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Fetch all KYC submissions
+  const fetchKYCSubmissions = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const data = await kycService.getKYCSubmissions();
+      setSubmissions(transformKYCSubmissions(data));
+    } catch (error) {
+      console.error('Failed to fetch KYC submissions:', error);
+      toast.error('Failed to load KYC submissions. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchKYCSubmissions();
+  }, [fetchKYCSubmissions]);
+
+  // Filter submissions based on active tab, search query, and date range
   const filteredSubmissions = submissions.filter((submission) => {
-    const matchesTab = statusFilter === 'all' ? true : submission.status === statusFilter;
-    const matchesActiveTab = submission.status === activeTab;
+    const matchesTab = submission.status === activeTab;
     const matchesSearch =
       submission.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       submission.user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       submission.userId.toLowerCase().includes(searchQuery.toLowerCase());
 
     let matchesDate = true;
-    if (dateRange) {
+    if (dateRange?.start && dateRange?.end) {
       const submissionDate = new Date(submission.submissionDate);
       const startDate = new Date(dateRange.start);
       const endDate = new Date(dateRange.end);
+      endDate.setHours(23, 59, 59, 999); // Include entire end day
       matchesDate = submissionDate >= startDate && submissionDate <= endDate;
     }
 
-    return matchesActiveTab && matchesSearch && matchesDate;
+    return matchesTab && matchesSearch && matchesDate;
   });
 
   const counts = {
@@ -60,26 +82,50 @@ export default function KYCVerification() {
     setIsModalOpen(true);
   };
 
-  const handleApprove = (id: string) => {
-    setSubmissions(prev => prev.map(s =>
-      s.id === id ? { ...s, status: 'approved' as const } : s
-    ));
-    toast.success('KYC submission approved successfully');
+  const handleApprove = async (id: string) => {
+    try {
+      const response = await kycService.approveKYC(id);
+      // Update local state to reflect the change
+      setSubmissions(prev => prev.map(s =>
+        s.id === id ? { ...s, status: 'approved' as const } : s
+      ));
+      toast.success(response.message || 'KYC submission approved successfully');
+    } catch (error) {
+      console.error('Failed to approve KYC:', error);
+      toast.error('Failed to approve KYC. Please try again.');
+    }
   };
 
-  const handleReject = (id: string, reason?: string) => {
-    setSubmissions(prev => prev.map(s =>
-      s.id === id ? { ...s, status: 'rejected' as const } : s
-    ));
-    toast.success('KYC submission rejected');
+  const handleReject = async (id: string, reason?: string) => {
+    try {
+      const response = await kycService.rejectKYC(id, reason || 'Rejected by admin');
+      // Update local state to reflect the change
+      setSubmissions(prev => prev.map(s =>
+        s.id === id ? { ...s, status: 'rejected' as const, rejectionReason: reason } : s
+      ));
+      toast.success(response.message || 'KYC submission rejected');
+    } catch (error) {
+      console.error('Failed to reject KYC:', error);
+      toast.error('Failed to reject KYC. Please try again.');
+    }
   };
 
   const handleResetFilters = () => {
-    setStatusFilter('all');
     setDateRange(null);
     setSearchQuery('');
+    setActiveTab('pending');
     toast.success('Filters reset');
   };
+
+  if (isLoading) {
+    return (
+      <AdminLayout title="KYC Verification" subtitle="Review and verify user identity documents">
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout title="KYC Verification" subtitle="Review and verify user identity documents">
@@ -164,7 +210,7 @@ export default function KYCVerification() {
                     </div>
                   </td>
                   <td className="text-muted-foreground">{submission.user.email}</td>
-                  <td className="text-muted-foreground">{submission.submissionDate} 14:30</td>
+                  <td className="text-muted-foreground">{formatDateTime(submission.submissionDate)}</td>
                   <td>
                     <span className={cn(
                       'status-badge',

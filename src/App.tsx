@@ -12,7 +12,6 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import SavingsDisclaimer from "./pages/SavingsDisclaimer";
 import ReferralPolicy from "./pages/ReferralPolicy";
-import SupportTicket from "./pages/SupportTicket";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -72,14 +71,6 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <ReferralPolicy />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/support-ticket"
-              element={
-                <ProtectedRoute>
-                  <SupportTicket />
                 </ProtectedRoute>
               }
             />

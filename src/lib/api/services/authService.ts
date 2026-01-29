@@ -6,7 +6,7 @@
 import apiClient from '../apiClient';
 import { API_CONFIG } from '../config';
 import { tokenService } from '../tokenService';
-import type { LoginRequest, LoginResponse, User } from '../types';
+import type { LoginRequest, LoginResponse, ChangePasswordRequest, ChangePasswordResponse, User } from '../types';
 
 class AuthService {
     /**
@@ -86,6 +86,23 @@ class AuthService {
             tokenService.clearTokens();
             return null;
         }
+    }
+
+    /**
+     * Change user password
+     */
+    async changePassword(oldPassword: string, newPassword: string, confirmPassword: string): Promise<ChangePasswordResponse> {
+        const payload: ChangePasswordRequest = {
+            old_password: oldPassword,
+            new_password: newPassword,
+            confirm_password: confirmPassword,
+        };
+
+        const response = await apiClient.post<ChangePasswordResponse>(
+            API_CONFIG.ENDPOINTS.AUTH.CHANGE_PASSWORD,
+            payload
+        );
+        return response.data;
     }
 }
 

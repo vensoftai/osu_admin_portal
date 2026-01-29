@@ -20,27 +20,7 @@ export interface KYCSubmission {
   documentType: string;
   status: 'pending' | 'approved' | 'rejected';
   documents?: KYCDocuments;
-}
-
-export interface SupportTicket {
-  id: string;
-  userId: string;
-  user: User;
-  subject: string;
-  message: string;
-  status: 'open' | 'in-progress' | 'resolved' | 'closed';
-  priority: 'low' | 'medium' | 'high';
-  createdAt: string;
-  updatedAt: string;
-  responses: TicketResponse[];
-}
-
-export interface TicketResponse {
-  id: string;
-  message: string;
-  isAdmin: boolean;
-  createdAt: string;
-  author: string;
+  rejectionReason?: string | null;
 }
 
 export interface StatCard {

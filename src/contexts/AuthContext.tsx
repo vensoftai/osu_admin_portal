@@ -8,7 +8,7 @@ interface AuthContextType {
     isLoading: boolean;
     login: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
     logout: () => void;
-    changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+    changePassword: (currentPassword: string, newPassword: string, confirmPassword: string) => Promise<{ success: boolean; message: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -92,10 +92,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null);
     };
 
-    const changePassword = async (currentPassword: string, newPassword: string) => {
-        // TODO: Implement change password API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return Promise.resolve();
+    const changePassword = async (currentPassword: string, newPassword: string, confirmPassword: string): Promise<{ success: boolean; message: string }> => {
+        try {
+            const response = await authService.changePassword(currentPassword, newPassword, confirmPassword);
+            return { success: true, message: response.message || 'Password changed successfully' };
+        } catch (error) {
+            const errorMessage = getErrorMessage(error);
+            return { success: false, message: errorMessage };
+        }
     };
 
     return (

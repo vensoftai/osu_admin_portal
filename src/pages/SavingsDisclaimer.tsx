@@ -1,12 +1,43 @@
+import { useState, useEffect } from 'react';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { PolicyEditor } from '@/components/policy/PolicyEditor';
-import { savingsDisclaimerContent } from '@/data/mockData';
+import { contentService } from '@/lib/api';
 import { toast } from 'sonner';
 
 export default function SavingsDisclaimer() {
-  const handleSave = (content: string) => {
-    console.log('Saving savings disclaimer:', content);
-    toast.success('Savings challenge disclaimer saved successfully');
+  const [content, setContent] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    fetchContent();
+  }, []);
+
+  const fetchContent = async () => {
+    try {
+      setIsLoading(true);
+      const response = await contentService.getSavingsDisclaimer();
+      setContent(response.content || '');
+    } catch (error) {
+      console.error('Failed to fetch savings disclaimer:', error);
+      toast.error('Failed to load savings challenge disclaimer');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSave = async (newContent: string) => {
+    try {
+      setIsSaving(true);
+      await contentService.updateSavingsDisclaimer(newContent);
+      setContent(newContent);
+      toast.success('Savings challenge disclaimer saved successfully');
+    } catch (error) {
+      console.error('Failed to save savings disclaimer:', error);
+      toast.error('Failed to save savings challenge disclaimer');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -19,9 +50,11 @@ export default function SavingsDisclaimer() {
           <span className="mx-2">›</span>
           <span className="text-foreground">Savings Challenge Disclaimer</span>
         </div>
-        
-        <PolicyEditor 
-          initialContent={savingsDisclaimerContent}
+
+        <PolicyEditor
+          initialContent={content}
+          isLoading={isLoading}
+          isSaving={isSaving}
           onSave={handleSave}
         />
       </div>

@@ -43,11 +43,15 @@ export default function Settings() {
 
         setIsLoading(true);
         try {
-            await changePassword(currentPassword, newPassword);
-            toast.success('Password changed successfully');
-            setCurrentPassword('');
-            setNewPassword('');
-            setConfirmPassword('');
+            const result = await changePassword(currentPassword, newPassword, confirmPassword);
+            if (result.success) {
+                toast.success(result.message);
+                setCurrentPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
+            } else {
+                toast.error(result.message);
+            }
         } catch (error) {
             toast.error('Failed to change password. Please try again.');
         } finally {

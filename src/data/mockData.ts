@@ -1,4 +1,4 @@
-import { KYCSubmission, SupportTicket, User } from '@/types';
+import { KYCSubmission, User } from '@/types';
 
 export const mockUsers: User[] = [
   { id: 'USR-10234', name: 'Sarah Johnson', email: 'sarah.j@email.com', avatar: '' },
@@ -12,12 +12,12 @@ export const mockUsers: User[] = [
 ];
 
 export const mockKYCSubmissions: KYCSubmission[] = [
-  { 
-    id: '1', 
-    userId: 'USR-10234', 
-    user: mockUsers[0], 
-    submissionDate: 'Jan 15, 2025', 
-    documentType: "Driver's License", 
+  {
+    id: '1',
+    userId: 'USR-10234',
+    user: mockUsers[0],
+    submissionDate: 'Jan 15, 2025',
+    documentType: "Driver's License",
     status: 'pending',
     documents: {
       govIdFront: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop',
@@ -26,12 +26,12 @@ export const mockKYCSubmissions: KYCSubmission[] = [
       addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
     }
   },
-  { 
-    id: '2', 
-    userId: 'USR-10233', 
-    user: mockUsers[1], 
-    submissionDate: 'Jan 14, 2025', 
-    documentType: 'Passport', 
+  {
+    id: '2',
+    userId: 'USR-10233',
+    user: mockUsers[1],
+    submissionDate: 'Jan 14, 2025',
+    documentType: 'Passport',
     status: 'pending',
     documents: {
       govIdFront: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=250&fit=crop',
@@ -40,12 +40,12 @@ export const mockKYCSubmissions: KYCSubmission[] = [
       addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
     }
   },
-  { 
-    id: '3', 
-    userId: 'USR-10232', 
-    user: mockUsers[2], 
-    submissionDate: 'Jan 14, 2025', 
-    documentType: 'National ID', 
+  {
+    id: '3',
+    userId: 'USR-10232',
+    user: mockUsers[2],
+    submissionDate: 'Jan 14, 2025',
+    documentType: 'National ID',
     status: 'pending',
     documents: {
       govIdFront: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop',
@@ -54,12 +54,12 @@ export const mockKYCSubmissions: KYCSubmission[] = [
       addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
     }
   },
-  { 
-    id: '4', 
-    userId: 'USR-10231', 
-    user: mockUsers[3], 
-    submissionDate: 'Jan 13, 2025', 
-    documentType: "Driver's License", 
+  {
+    id: '4',
+    userId: 'USR-10231',
+    user: mockUsers[3],
+    submissionDate: 'Jan 13, 2025',
+    documentType: "Driver's License",
     status: 'approved',
     documents: {
       govIdFront: 'https://images.unsplash.com/photo-578662996442-48f60103fc96?w=400&h=250&fit=crop',
@@ -68,12 +68,12 @@ export const mockKYCSubmissions: KYCSubmission[] = [
       addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
     }
   },
-  { 
-    id: '5', 
-    userId: 'USR-10230', 
-    user: mockUsers[4], 
-    submissionDate: 'Jan 13, 2025', 
-    documentType: 'Passport', 
+  {
+    id: '5',
+    userId: 'USR-10230',
+    user: mockUsers[4],
+    submissionDate: 'Jan 13, 2025',
+    documentType: 'Passport',
     status: 'approved',
     documents: {
       govIdFront: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=250&fit=crop',
@@ -82,12 +82,12 @@ export const mockKYCSubmissions: KYCSubmission[] = [
       addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
     }
   },
-  { 
-    id: '6', 
-    userId: 'USR-10229', 
-    user: mockUsers[5], 
-    submissionDate: 'Jan 12, 2025', 
-    documentType: 'National ID', 
+  {
+    id: '6',
+    userId: 'USR-10229',
+    user: mockUsers[5],
+    submissionDate: 'Jan 12, 2025',
+    documentType: 'National ID',
     status: 'rejected',
     documents: {
       govIdFront: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop',
@@ -96,12 +96,12 @@ export const mockKYCSubmissions: KYCSubmission[] = [
       addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
     }
   },
-  { 
-    id: '7', 
-    userId: 'USR-10228', 
-    user: mockUsers[6], 
-    submissionDate: 'Jan 12, 2025', 
-    documentType: "Driver's License", 
+  {
+    id: '7',
+    userId: 'USR-10228',
+    user: mockUsers[6],
+    submissionDate: 'Jan 12, 2025',
+    documentType: "Driver's License",
     status: 'pending',
     documents: {
       govIdFront: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop',
@@ -110,12 +110,12 @@ export const mockKYCSubmissions: KYCSubmission[] = [
       addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
     }
   },
-  { 
-    id: '8', 
-    userId: 'USR-10227', 
-    user: mockUsers[7], 
-    submissionDate: 'Jan 11, 2025', 
-    documentType: 'Passport', 
+  {
+    id: '8',
+    userId: 'USR-10227',
+    user: mockUsers[7],
+    submissionDate: 'Jan 11, 2025',
+    documentType: 'Passport',
     status: 'approved',
     documents: {
       govIdFront: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400&h=250&fit=crop',
@@ -123,107 +123,6 @@ export const mockKYCSubmissions: KYCSubmission[] = [
       selfie: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop',
       addressProof: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
     }
-  },
-];
-
-export const mockSupportTickets: SupportTicket[] = [
-  {
-    id: 'TKT-001',
-    userId: 'USR-10234',
-    user: mockUsers[0],
-    subject: 'Unable to upload KYC documents',
-    message: 'I have been trying to upload my passport for verification but the system keeps showing an error. I have tried multiple times with different file formats.',
-    status: 'open',
-    priority: 'high',
-    createdAt: 'Jan 18, 2025 10:30',
-    updatedAt: 'Jan 18, 2025 10:30',
-    responses: [],
-  },
-  {
-    id: 'TKT-002',
-    userId: 'USR-10233',
-    user: mockUsers[1],
-    subject: 'Account verification taking too long',
-    message: 'I submitted my documents 5 days ago but still haven\'t received any update on my verification status. Can you please check?',
-    status: 'in-progress',
-    priority: 'medium',
-    createdAt: 'Jan 17, 2025 14:22',
-    updatedAt: 'Jan 18, 2025 09:15',
-    responses: [
-      {
-        id: 'RSP-001',
-        message: 'Thank you for reaching out. We are looking into your verification status and will update you shortly.',
-        isAdmin: true,
-        createdAt: 'Jan 18, 2025 09:15',
-        author: 'Admin Support',
-      },
-    ],
-  },
-  {
-    id: 'TKT-003',
-    userId: 'USR-10232',
-    user: mockUsers[2],
-    subject: 'Need to update my email address',
-    message: 'I need to change my registered email address from emily.r@email.com to emily.rodriguez@newmail.com. How can I do this?',
-    status: 'resolved',
-    priority: 'low',
-    createdAt: 'Jan 16, 2025 08:45',
-    updatedAt: 'Jan 17, 2025 11:20',
-    responses: [
-      {
-        id: 'RSP-002',
-        message: 'Please verify your identity by providing your registered phone number and date of birth.',
-        isAdmin: true,
-        createdAt: 'Jan 16, 2025 10:00',
-        author: 'Admin Support',
-      },
-      {
-        id: 'RSP-003',
-        message: 'My phone is +1-555-0123 and DOB is March 15, 1990.',
-        isAdmin: false,
-        createdAt: 'Jan 16, 2025 10:30',
-        author: 'Emily Rodriguez',
-      },
-      {
-        id: 'RSP-004',
-        message: 'Your email has been successfully updated. Please log in with your new email.',
-        isAdmin: true,
-        createdAt: 'Jan 17, 2025 11:20',
-        author: 'Admin Support',
-      },
-    ],
-  },
-  {
-    id: 'TKT-004',
-    userId: 'USR-10231',
-    user: mockUsers[3],
-    subject: 'Referral bonus not credited',
-    message: 'I referred my friend last week and they completed registration, but I haven\'t received my referral bonus yet.',
-    status: 'open',
-    priority: 'medium',
-    createdAt: 'Jan 15, 2025 16:10',
-    updatedAt: 'Jan 15, 2025 16:10',
-    responses: [],
-  },
-  {
-    id: 'TKT-005',
-    userId: 'USR-10230',
-    user: mockUsers[4],
-    subject: 'Question about savings challenge',
-    message: 'Can you explain how the savings challenge works? I\'m interested in participating but not sure about the rules.',
-    status: 'closed',
-    priority: 'low',
-    createdAt: 'Jan 14, 2025 12:00',
-    updatedAt: 'Jan 14, 2025 15:30',
-    responses: [
-      {
-        id: 'RSP-005',
-        message: 'The savings challenge allows you to set savings goals and earn rewards. Please check our Savings Challenge Disclaimer page for full details.',
-        isAdmin: true,
-        createdAt: 'Jan 14, 2025 15:30',
-        author: 'Admin Support',
-      },
-    ],
   },
 ];
 

@@ -1,16 +1,23 @@
-import { useState } from 'react';
-import { Bold, Italic, List, Link2, Eye, Save } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Bold, Italic, List, Link2, Eye, Save, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 
 interface PolicyEditorProps {
-  initialContent: string;
+  initialContent?: string;
+  isLoading?: boolean;
+  isSaving?: boolean;
   onSave?: (content: string) => void;
 }
 
-export function PolicyEditor({ initialContent, onSave }: PolicyEditorProps) {
+export function PolicyEditor({ initialContent = '', isLoading = false, isSaving = false, onSave }: PolicyEditorProps) {
   const [content, setContent] = useState(initialContent);
   const [isPreview, setIsPreview] = useState(false);
+
+  // Update content when initialContent changes (e.g., after API fetch)
+  useEffect(() => {
+    setContent(initialContent);
+  }, [initialContent]);
 
   const handleSave = () => {
     onSave?.(content);
@@ -55,7 +62,11 @@ export function PolicyEditor({ initialContent, onSave }: PolicyEditorProps) {
       </div>
 
       <div className="p-4">
-        {isPreview ? (
+        {isLoading ? (
+          <div className="flex items-center justify-center min-h-[400px]">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
+        ) : isPreview ? (
           <div
             className="prose prose-sm max-w-none text-muted-foreground min-h-[400px] p-4 border border-border rounded-lg"
             dangerouslySetInnerHTML={{ __html: formatMarkdown(content) }}
@@ -75,13 +86,18 @@ export function PolicyEditor({ initialContent, onSave }: PolicyEditorProps) {
           variant="outline"
           onClick={() => setIsPreview(!isPreview)}
           className="gap-2"
+          disabled={isLoading}
         >
           <Eye className="h-4 w-4" />
           {isPreview ? 'Edit' : 'Preview'}
         </Button>
-        <Button onClick={handleSave} className="gap-2">
-          <Save className="h-4 w-4" />
-          Save Changes
+        <Button onClick={handleSave} className="gap-2" disabled={isLoading || isSaving}>
+          {isSaving ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Save className="h-4 w-4" />
+          )}
+          {isSaving ? 'Saving...' : 'Save Changes'}
         </Button>
       </div>
     </div>

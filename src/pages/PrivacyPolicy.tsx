@@ -1,12 +1,43 @@
+import { useState, useEffect } from 'react';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { PolicyEditor } from '@/components/policy/PolicyEditor';
-import { privacyPolicyContent } from '@/data/mockData';
+import { contentService } from '@/lib/api';
 import { toast } from 'sonner';
 
 export default function PrivacyPolicy() {
-  const handleSave = (content: string) => {
-    console.log('Saving privacy policy:', content);
-    toast.success('Privacy policy saved successfully');
+  const [content, setContent] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    fetchContent();
+  }, []);
+
+  const fetchContent = async () => {
+    try {
+      setIsLoading(true);
+      const response = await contentService.getPrivacyPolicy();
+      setContent(response.content || '');
+    } catch (error) {
+      console.error('Failed to fetch privacy policy:', error);
+      toast.error('Failed to load privacy policy');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSave = async (newContent: string) => {
+    try {
+      setIsSaving(true);
+      await contentService.updatePrivacyPolicy(newContent);
+      setContent(newContent);
+      toast.success('Privacy policy saved successfully');
+    } catch (error) {
+      console.error('Failed to save privacy policy:', error);
+      toast.error('Failed to save privacy policy');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -19,9 +50,11 @@ export default function PrivacyPolicy() {
           <span className="mx-2">›</span>
           <span className="text-foreground">Privacy Policy</span>
         </div>
-        
-        <PolicyEditor 
-          initialContent={privacyPolicyContent}
+
+        <PolicyEditor
+          initialContent={content}
+          isLoading={isLoading}
+          isSaving={isSaving}
           onSave={handleSave}
         />
       </div>

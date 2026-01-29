@@ -7,7 +7,6 @@ import {
   FileText,
   AlertTriangle,
   Users,
-  Headphones,
   Settings,
   LogOut,
   Menu,
@@ -33,7 +32,6 @@ const navItems: NavItem[] = [
   { label: 'Terms & Condition', path: '/terms-conditions', icon: FileText },
   { label: 'Savings Challenge Disclaimer', path: '/savings-disclaimer', icon: AlertTriangle },
   { label: 'Referral Policy', path: '/referral-policy', icon: Users },
-  { label: 'Support Ticket', path: '/support-ticket', icon: Headphones },
   { label: 'Settings', path: '/settings', icon: Settings },
 ];
 
